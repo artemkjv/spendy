@@ -1,0 +1,90 @@
+server {
+	listen [::]:80 default_server;
+	root /var/www/frontend/dist;
+
+	add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Cache-Control "public, max-age=31536000";
+	index index.html;
+	server_name _;
+
+	charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+	location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    location /admin {
+        alias /var/www/backend/public;
+        try_files $uri $uri/ @laravel;
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+        }
+    }
+
+    location @laravel {
+        rewrite /admin/(.*)?$ /admin/index.php?$is_args$args last;
+    }
+
+}
+
+server {
+    root /var/www/frontend/dist;
+
+	add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Cache-Control "public, max-age=31536000";
+
+	index index.php;
+    server_name advokat130.com; # managed by Certbot
+
+	charset utf-8;
+
+	location / {
+        try_files $uri /index.html;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+	location = /robots.txt  { access_log off; log_not_found off; }
+
+
+    location /admin {
+        alias /var/www/backend/public;
+        try_files $uri $uri/ @laravel;
+        location ~ \.php$ {
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME $request_filename;
+        }
+    }
+
+    location @laravel {
+            rewrite /admin/(.*)?$ /admin/index.php?$is_args$args last;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/advokat130.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/advokat130.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = advokat130.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+	listen 80 ;
+	listen [::]:80 ;
+    server_name advokat130.com;
+    return 404; # managed by Certbot
+
+
+}

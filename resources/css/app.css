@@ -1,0 +1,109 @@
+@import "../fonts/fonts.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    font-family: 'Nourd', sans-serif;
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+body {
+    -ms-overflow-x: hidden;
+    overflow-x: hidden;
+}
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    transition: 0.5s ease-in-out;
+}
+*:before,
+*:after {
+    z-index: -1;
+}
+
+
+select option {
+    width: 300px !important;
+}
+.colision {
+    position: relative;
+    z-index: 2;
+    display: block;
+    overflow: hidden;
+    height: 60px;
+    width: 150px;
+    max-width: 200px;
+    margin: 1rem auto;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+    color: #eeeeee;
+    border-radius: 21px;
+}
+.colision::before,
+.colision::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height:20px;
+    background-color: #eeeeee;
+    border-radius: 50%;
+}
+
+.colision::before {
+    left: -20px;
+    transform: translate(-50%, -50%);
+}
+
+.colision::after {
+    right: -20px;
+    transform: translate(50%, -50%);
+}
+
+.colision:hover {
+    color: #343B34;
+}
+
+.colision:hover::before {
+    animation: criss-cross-left 0.8s both;
+    animation-direction: alternate;
+}
+
+.colision:hover::after {
+    animation: criss-cross-right 0.8s both;
+    animation-direction: alternate;
+}
+@keyframes criss-cross-left {
+    0% {
+        left: -20px;
+    }
+    50% {
+        left: 50%;
+        width: 20px;
+        height: 20px;
+    }
+    100% {
+        left: 50%;
+        width: 500px;
+        height:100px;
+    }
+}
+
+@keyframes criss-cross-right {
+    0% {
+        right: -20px;
+    }
+    50% {
+        right: 50%;
+        width: 20px;
+        height: 20px;
+    }
+    100% {
+        right: 50%;
+        width: 500px;
+        height:100px;
+    }
+}
