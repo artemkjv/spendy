@@ -11,6 +11,7 @@ class TelegramController extends Controller
         $bot = new \TelegramBot\Api\Client(config('telegram.token'));
         $bot->command('start', function ($message) use ($bot) {
             $chatId = $message->getChat()->getId();
+            info($chatId);
 
             $bot->sendMessage($message->getChat()->getId(), 'Ви запустили бота!');
         });
